@@ -29,32 +29,36 @@ function AcceptRequest() {
 
             if (res.status === 200){
                 console.log('friend list added successfully');
-                dispatch(addUser(res.data.meUpdate))
+                dispatch(addUser(res.data.meUpdate));
             }
         }catch(err){
             console.log(err);
         }
     }    
-    console.log(me);
+    console.log(onlyRequest);
     
     
     return (
-        <div>
-            <>
+        <div className="friendRequest_main" style={{padding: onlyRequest.length > 0 ? '10px' : '0px'}}>
             {
                 onlyRequest?.map((elem)=>{
                     return(
-                        <div key = {elem._id as React.Key} style={{display:'flex', alignItems:'center', gap:'0.5rem'}}>
+                        <div key = {elem._id as React.Key} className="user_lists">
                             {elem?.senderImage && (
-                            <img src={elem.senderImage?.toString()} width={20} height={20} referrerPolicy="no-referrer" alt={`${elem.senderName} image`}/>
+                            <img src={elem.senderImage?.toString()} 
+                                width={20} height={20} referrerPolicy="no-referrer" 
+                                alt={`${elem.senderName} image`}
+                                className="user_img"
+                                />
                             )}
-                            <p>{elem.senderName}</p>
-                            <button onClick={()=>{sendAcceptReq(elem)}}>Accept</button>
+                            <div className="users_request">
+                                <p>{elem.senderName}</p>
+                                <button onClick={()=>{sendAcceptReq(elem)}}>Accept</button>
+                            </div>
                         </div>
                     )
                 })
             }
-            </>
         </div>
     );
 }

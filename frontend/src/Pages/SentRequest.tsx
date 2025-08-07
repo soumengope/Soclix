@@ -9,6 +9,7 @@ import type { AppDispatch } from "../features/store";
 import { addFriendReq } from "../features/friendReqSlice";
 import './sentrequest.css';
 import Spinner from "../components/Spinner";
+import AcceptRequest from "./AcceptRequest";
 
 function SentRequest() {
     const me = useSelector((state:RootState)=>state.user.user);
@@ -71,7 +72,9 @@ function SentRequest() {
     
     return (
         <>
-        <h2 className="friendreq_head">Send Friend Requests</h2>
+         <AcceptRequest/>
+
+        <h2 className="friendreq_head">Add Friend Requests</h2>
         <section className="friendRequest_main">
             {
                 users?.map((elem)=> {
