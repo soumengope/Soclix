@@ -1,0 +1,100 @@
+*,*::after,*::before{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+.navbar_main{
+    display:grid;
+    grid-template-columns: repeat(5,1fr);
+    gap:1rem;
+    background-color: antiquewhite;
+}
+.navbar_left img,
+.navbar_right img{
+    width:40px;
+    height:40px;
+    margin-top:0.4rem;
+    cursor:pointer;
+    margin:0.5rem;
+    padding:0.2rem;
+}
+.navbar_left{
+    grid-column: 1/5;
+    height:55px;
+}
+.show_navbar{
+    display:flex;
+    pointer-events:fill;
+    justify-content:space-around;
+    align-items: center;
+}
+.blur_navbar{
+    display:flex;
+    pointer-events: none;
+    justify-content:space-around;
+    align-items: center;
+}
+.blur_navbar img{
+    filter:blur(2px);
+}
+.navbar_right{
+    height:55px;
+}
+.profile_counter{
+    display:block;
+}
+.profile_image{
+    border-radius: 50%;
+}
+.profile_expand{
+    display:block;
+    background-color:antiquewhite;
+    border:2px solid white;
+    position: fixed;
+    inset:57px 0 55% 72%;
+    padding-top:1rem;
+}
+.profile_expand p{
+    padding:0.2rem;
+    padding-bottom:1rem;
+    font-size: 1.2rem;
+}
+.profile_expand button{
+  padding:0.2rem 0.8rem;
+  font-size: 1.1rem;
+  cursor:pointer;
+}
+.profile_hide{
+    display:none;
+}
+.active{
+    padding:0.1rem;
+    background-color: white;
+    border-radius: 50% 50% 2px 2px;
+    position: relative;
+    top:0.2rem;
+}
+
+@media (max-width:700px){
+    .navbar_left img,
+    .navbar_right img{
+        width:30px;
+        height:30px;
+    }
+    .active{
+        top:0.4rem;
+    }
+    .profile_expand{
+        inset:45px 0 75% 75%;
+    }
+    .profile_expand p{
+        padding-bottom:1rem;
+        font-size: 1rem;
+        text-wrap: wrap;
+    }
+    .profile_expand button{
+        padding:0.2rem 0.6rem;
+        font-size: 1rem;
+        cursor:pointer;
+    }
+}

@@ -1,0 +1,58 @@
+*{
+    box-sizing: border-box;
+    margin:0;
+    padding:0;
+}
+
+.friendRequest_main{
+  margin:0 auto;
+  padding:1rem;
+  display:grid;
+  grid-template-columns: repeat(auto-fit,minmax(min(250px, 90%), 1fr));
+  justify-content:center;
+  align-items: center;
+  gap:1rem;
+}
+.friendRequest_main > div{
+  border:1px solid green;
+  justify-content: center;
+  padding:1rem;
+}
+
+.friendreq_head{
+  text-align:center;
+  padding-top:1.5rem;
+}
+.user_lists{
+  border:1px solid green;
+  padding:1rem;
+  display:flex;
+  align-items: flex-end;
+  gap:0.8rem;
+}
+.user_lists p{
+  text-transform: capitalize;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  letter-spacing: 0.1rem;
+  font-weight: 600;
+  text-wrap: wrap;
+}
+.users_request{
+  text-align: left;
+}
+.request_btn{
+  padding: 0.4rem 0.8rem;
+}
+
+
+@media (max-width:700px){
+  .user_lists{
+    justify-content:flex-start;
+    align-items: center;
+    gap:0.8rem;
+  }
+  .friendreq_head{
+    padding-top:1rem;
+}
+}

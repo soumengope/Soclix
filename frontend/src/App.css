@@ -1,0 +1,140 @@
+*,
+*::after,
+*::before{
+  box-sizing: border-box;
+  margin:0;
+  padding:0;
+}
+body{
+  margin: 0 auto;
+  text-align: center;
+  overflow-x: hidden;
+}
+button{
+  cursor:pointer;
+  background-color: black;
+  color:white;
+  border:unset;
+}
+button:hover{
+  border-radius: 10px;
+}
+.main_section{
+  margin:0 auto;
+  padding:1rem;
+}
+.show{
+  width:50%;
+  margin:0 auto;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  gap:1rem;
+  padding:1rem 0.5rem;
+  background-color: wheat;
+}
+.show > button{
+  padding:0.5rem 1rem;
+}
+.hide{
+  display:none;
+}
+.section_control{
+  margin:0 auto;
+  width:50%;
+  padding: 1rem;
+  border:1px solid green;
+  margin-bottom:1rem;
+}
+.section_control h2{
+  text-align: left;
+  padding-bottom:0.5rem;
+}
+.section_control > button{
+  margin-top:1rem;
+  padding:0.5rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.post_main{
+  width:50%;
+  margin: 1rem auto;
+  text-align: left;
+}
+.post_div{
+  border:1px solid green;
+  padding:1rem;
+}
+.post_div + div{
+  margin-top:1rem;
+}
+.post_header{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap:1rem;
+  font-size:1.2rem;
+  font-weight: 600;
+}
+.post_description{
+  padding-top:1rem;
+  text-wrap: wrap;
+  font-size: 1.1rem;
+}
+.postImages_main{
+  display:flex;
+  flex-wrap: wrap;
+  gap:1rem;
+  justify-content: center;
+  align-items: center;
+  padding-top:1rem;
+}
+.post_images{
+  border:1px solid green;
+  width:40%;
+}
+.uploadImage_show{
+  display: flex;
+  flex-wrap: wrap;
+}
+.uploadImage_img{
+  width:100px;
+  height:100px;
+  object-fit: cover;
+}
+.post_textarea{
+  padding:0.5rem;
+}
+.bottom_contents{
+  margin-top:1rem;
+  padding:0.5rem;
+  display: flex;
+  justify-content: space-between;
+}
+.bottom_contents img{
+  width:30px;
+  height:30px;
+  cursor:pointer;
+}
+.fill{
+  filter: invert(12%) sepia(80%) saturate(6366%) hue-rotate(358deg) brightness(106%) contrast(110%);
+}
+.bottom_contents div{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.bottom_contents p{
+  padding-top:0.5rem;
+}
+@media (max-width:700px){
+  .show{
+    width:90%;
+  }
+  .section_control{
+    width:90%;
+  }
+  .post_main{
+    width:90%;
+  }
+}
