@@ -14,7 +14,6 @@
   gap:1rem;
 }
 .friendRequest_main > div{
-  border:1px solid green;
   justify-content: center;
   padding:1rem;
 }
@@ -24,7 +23,7 @@
   padding-top:1.5rem;
 }
 .user_lists{
-  border:1px solid green;
+  box-shadow: 1px 1px 4px 1px #daa4de;
   padding:1rem;
   display:flex;
   align-items: flex-end;

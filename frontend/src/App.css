@@ -1,3 +1,5 @@
+/* color :  bg-color:#FEFBF6, button-color:#3D3C42, nav:#A6D1E6 other:#daa4de*/
+
 *,
 *::after,
 *::before{
@@ -31,7 +33,7 @@ button:hover{
   align-items: center;
   gap:1rem;
   padding:1rem 0.5rem;
-  background-color: wheat;
+  background-color: #daa4de;
 }
 .show > button{
   padding:0.5rem 1rem;
@@ -43,7 +45,6 @@ button:hover{
   margin:0 auto;
   width:50%;
   padding: 1rem;
-  border:1px solid green;
   margin-bottom:1rem;
 }
 .section_control h2{
@@ -62,7 +63,7 @@ button:hover{
   text-align: left;
 }
 .post_div{
-  border:1px solid green;
+  box-shadow: 1px 1px 4px 1px #daa4de;
   padding:1rem;
 }
 .post_div + div{
@@ -82,16 +83,20 @@ button:hover{
   font-size: 1.1rem;
 }
 .postImages_main{
+  width:80%;
+  height:350px;
   display:flex;
-  flex-wrap: wrap;
+  margin:auto;
   gap:1rem;
   justify-content: center;
   align-items: center;
   padding-top:1rem;
+  overflow: hidden;
 }
 .post_images{
-  border:1px solid green;
-  width:40%;
+  overflow: hidden;
+  height: 100%;
+  object-fit:contain; 
 }
 .uploadImage_show{
   display: flex;
@@ -106,8 +111,9 @@ button:hover{
   padding:0.5rem;
 }
 .bottom_contents{
-  margin-top:1rem;
+  margin-top:2.5rem;
   padding:0.5rem;
+  padding-bottom:0;
   display: flex;
   justify-content: space-between;
 }
@@ -134,7 +140,17 @@ button:hover{
   .section_control{
     width:90%;
   }
+  .postImages_main{
+    width:90%;
+    height:auto;
+  }
   .post_main{
     width:90%;
+  }
+  .post_description{
+    padding-top:0.5rem;
+  }
+  .bottom_contents{
+    margin-top:0.5rem;
   }
 }

@@ -7,7 +7,7 @@
     display:grid;
     grid-template-columns: repeat(5,1fr);
     gap:1rem;
-    background-color: antiquewhite;
+    background-color:#A6D1E6;
 }
 .navbar_left img,
 .navbar_right img{
@@ -17,6 +17,10 @@
     cursor:pointer;
     margin:0.5rem;
     padding:0.2rem;
+}
+.navbar_right img{
+    padding:0;
+    border:4px solid black;
 }
 .navbar_left{
     grid-column: 1/5;
@@ -48,8 +52,8 @@
 }
 .profile_expand{
     display:block;
-    background-color:antiquewhite;
-    border:2px solid white;
+    background-color:#daa4de;
+    box-shadow: 1px 1px 4px 1px rgba(0,0,0,0.6);
     position: fixed;
     inset:57px 0 55% 72%;
     padding-top:1rem;

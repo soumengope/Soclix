@@ -13,6 +13,8 @@ import Spinner from '../components/Spinner';
 const Homepage = () => {
   const dispatch = useDispatch<AppDispatch>();
   const me = useSelector((state:RootState)=> state.user.user);
+  console.log(me);
+  
   const posts = useSelector((state:RootState)=> state.posts.posts);
 
   const [images, setImages] = useState<File[]>([]);
@@ -77,6 +79,7 @@ const Homepage = () => {
   }
 
   return (
+    
     <section className='main_section'>
       <div className={isPost?'hide':'show'}>
         <h2>Let's create a post</h2>
@@ -142,7 +145,7 @@ const Homepage = () => {
                           <img 
                             src={`http://localhost:8080${ele}`} 
                             className="post_images" 
-                            referrerPolicy="no-referrer" 
+                            referrerPolicy="no-referrer"
                             alt='post images'/>
                       )
                     })
