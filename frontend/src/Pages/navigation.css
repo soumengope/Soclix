@@ -18,9 +18,12 @@
     margin:0.5rem;
     padding:0.2rem;
 }
-.navbar_right img{
+.profile_image{
     padding:0;
     border:4px solid black;
+}
+.loginImg{
+    border: none;
 }
 .navbar_left{
     grid-column: 1/5;

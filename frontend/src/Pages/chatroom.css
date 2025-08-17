@@ -16,6 +16,7 @@
 .chat_main{
   padding:0.5rem;
   grid-column: 3 / -1;
+  position: relative;
 }
 .chat_main h2{
   text-align: center;
@@ -34,7 +35,7 @@
   scrollbar-width: none; /* hide scroll bar Firefox */
   -ms-overflow-style: none;  /* hide scroll bar  IE 10+ */
 }
-.chat_container::-webkit-scrollbar { 
+.chat_container::-webkit-scrollbar{ 
   display: none;  /* hide scroll bar Chrome, safari */
 }
 .my_chat,
@@ -43,15 +44,16 @@
   padding: 0.5rem;
   border-radius: 8px;
   word-wrap: break-word;
+  text-align:left;
 }
 .my_chat {
   align-self: flex-end;
+  background-color: #daa4de;
 }
 .friend_chat {
-  background-color:#daa4de;;
+  background-color:whitesmoke;
   align-self: flex-start;
 }
-
 .chatInp_main{
   width:90%;
   display: flex;
@@ -59,10 +61,33 @@
   align-items: center;
   margin:1rem auto;
 }
-.chat_inp{
+.chatInp_imgMain{
   width:60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+.chat_inp{
+  width:100%;
   padding:0.8rem;
   font-size: 1rem;
+  padding-right:4rem;
+  box-shadow: 1px 1px 4px 1px #daa4de;
+}
+.custom-file{
+  position: absolute;
+  right:1rem;
+}
+.custom-file input[type="file"] {
+  display: none;
+}
+.custom-file label {
+  cursor: pointer;
+}
+.custom-file img{
+  width: 30px;
+  height: 30px;
 }
 .inp_btn{
   width:20%;
@@ -70,6 +95,7 @@
   margin-left:1rem;
   cursor: pointer;
   font-size: 1.1rem;
+  box-shadow: 1px 1px 4px 1px #daa4de;
 }
 .show_friendLists{
   grid-column: 1/3;
@@ -118,6 +144,20 @@
 .req_btn{
   padding: 0.4rem 0.8rem;
 }
+.msg_image{
+  width:200px;
+  overflow: hidden;
+}
+.chatImg_preview{
+  margin:1rem;
+}
+.chatImg_preview img{
+  width:200px;
+  height:200px;
+  object-fit: contain;
+  padding:0;
+  margin:0;
+}
 @media (max-width:750px){
   .chat_main{
     padding:0rem;
@@ -129,18 +169,19 @@
     max-height: 65dvh;
   }
   .chatInp_main{
-    width:95%;
-    margin:1rem auto;
+    width:90%;
   }
   .chat_inp{
-    width:80%;
-    padding:0.8rem;
-    font-size: 1rem;
+    padding-right:2.8rem;
+  }
+  .chatInp_imgMain{
+      width:75%;
   }
   .inp_btn{
-    width:20%;
-    padding:0.8rem;
+    width:25%;
+    padding:0.9rem;
     margin-left:0.5rem;
+    font-size: 0.9rem;
   }
   .chatroom_mainSection{
     display:grid;
@@ -166,5 +207,12 @@
     justify-content:center;
     align-items: center;
     gap:1rem;
-}
+  }
+  .msg_image{
+    width:150px;
+  }
+  .custom-file img{
+    width: 20px;
+    height: 20px;
+  }
 }

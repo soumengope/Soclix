@@ -1,9 +1,10 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef} from 'react';
 import { useParams } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import { useSelector } from "react-redux";
 import type { RootState } from "../features/store";
 import FriendLists from './FriendLists';
+import axios from 'axios';
 import "./chatroom.css"
 
 const socket = io('http://localhost:8080');
@@ -12,6 +13,7 @@ type Message = {
   sender: string,
   senderName:string,
   message: string,
+  image:string,
   timestamp: string,
 };
 
@@ -23,6 +25,7 @@ function Chatroom() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [friendName, setFriendName] = useState<string>('');
   const chatBottomRef = useRef<HTMLDivElement>(null);
+  const [image, setImage]= useState<File | null>(null);
 
   useEffect(() => {
     if (!roomId) return;
@@ -52,17 +55,43 @@ function Chatroom() {
     };
   }, [roomId]);
 
-  const sendMessage = () => {
-    if (message.trim() === '' || !roomId) return;
+  const sendMessage = async() => {
+    if ((message.trim() === ''  &&  !image) || !roomId) return;
+    let fileUrl = null;
 
-    socket.emit('send-message', {
-      roomId,
-      message,
-      sender: socket.id,
-      senderName:me?.username,
+    if (image) {
+  const formData = new FormData();
+  formData.append("image", image);
+
+  try {
+    const res = await axios.post("http://localhost:8080/chatImage", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
 
-    setMessage('');
+    console.log("Uploaded image URL:", res.data.imageUrl);
+
+    fileUrl = res.data.imageUrl; // ✅ use imageUrl, not fileUrl
+  } catch (error) {
+    console.error("File upload failed:", error);
+    return;
+  }
+}
+
+
+    // Now send socket message with file URL (if any)
+    socket.emit("send-message", {
+      roomId,
+      message,
+      image:fileUrl, // can be null if no file
+      sender: socket.id,
+      senderName: me?.username,
+    });
+
+    // Reset
+    setMessage("");
+    setImage(null);
   };
   
   useEffect(() => {
@@ -71,6 +100,18 @@ function Chatroom() {
     container.scrollTop = container.scrollHeight;
   }
 }, [messages]);
+
+const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      setImage(file); // replace old image
+    } else {
+      setImage(null);
+    }
+    e.target.value = "";
+};
 
   return (
     <section className='chatroom_mainSection'>
@@ -86,7 +127,10 @@ function Chatroom() {
               const ifMe = msg.senderName === me?.username;
             return(
               <div key={idx} className={ifMe?'my_chat':'friend_chat'}>
-                <p className='chat_msg'>{msg.message}</p>
+                <div className='chat_msg'>
+                   {msg.message && <p className='msg_text'>{msg.message}</p>}
+                    {msg.image && <img className='msg_image' src={msg.image} alt="image"/>}
+                </div>
                 <div style={{ fontSize: '0.75rem', color: '#777' }}>
                   {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
                 </div>
@@ -96,22 +140,40 @@ function Chatroom() {
           </div>
 
           <div className='chatInp_main'>
-            <input
-            type="text"
-            placeholder="Type a message..."
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            className='chat_inp'
-            />
+            <div className='chatInp_imgMain'>
+              <input
+              type="text"
+              placeholder="Type a message..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              className='chat_inp'
+              />
+              <div className="custom-file">
+                <input type="file" accept='image/*' id="fileUpload" onChange={handleImage} />
+                <label htmlFor="fileUpload">
+                  <img src="../upload.png"/>
+                </label>
+              </div>
+            </div>
             <button onClick={sendMessage} className='inp_btn'>
               Send
             </button>
           </div>
+
+          <div className='chatImg_preview'>
+            {
+              image? <img
+              src={URL.createObjectURL(image)}
+              alt='chat photo'
+              className='chatImage_img'
+              /> :''
+            }
+          </div>
+
         </div>
         :<div className='empty_chatroom'></div>
       }
     </section>
   );
 }
-
 export default Chatroom;

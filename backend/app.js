@@ -18,6 +18,16 @@ const sharp = require('sharp');
 const fs = require('fs');
 const path = require('path');
 const Post = require('./dbControl/postSchema.js');
+const cloudinary = require("cloudinary").v2;
+const streamifier = require("streamifier");
+
+
+// Cloudinary config
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key:process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET
+});
 
 conn.set();
 
@@ -247,8 +257,10 @@ io.on('connection', (socket) => {
     socket.emit('room-history', history.reverse());
   });
 
-  socket.on('send-message', async ({ roomId, message, sender , senderName}) => {
-    const msg = await Message.create({ roomId, message, sender, senderName });
+  socket.on('send-message', async ({ roomId, message, image, sender , senderName}) => {
+    if(!image){image=""}
+    console.log(roomId, message,image,sender,senderName)
+    const msg = await Message.create({ roomId, message, image, sender, senderName });
 
     // Emit to all in the room (including sender)
     io.to(roomId).emit('receive-message', msg);
@@ -259,54 +271,47 @@ io.on('connection', (socket) => {
   });
 });
 
-app.post('/uploadPost',upload.array('images', 4),async (req,res) => {
-  const {userName, userId, userImage, description} = req.body;
-  const images = req.files;
+const uploadToCloudinary = (file) => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: "post_images" },
+      (error, result) => {
+        if (error) reject(error);
+        else resolve(result.secure_url);
+      }
+    );
+    streamifier.createReadStream(file.buffer).pipe(stream);
+  });
+};
 
-  const uploadDir = path.join(__dirname, 'uploads');
-  // Check if folder exists
-  if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-  }
-
-  // Get all existing "img*.jpg" files and extract the number
-  const existingFiles = fs.readdirSync(uploadDir)
-    .filter(name => /^img\d+\.(jpg|jpeg|png)$/.test(name));
-  const numbers = existingFiles.map(name => parseInt(name.match(/\d+/)[0]));
-  let counter = numbers.length > 0 ? Math.max(...numbers) + 1 : 1;
-
-  const imageLinks = [];
-  for (const file of images) {
-    const ext = file.mimetype === 'image/png' ? 'png' : 'jpg';
-    const filename = `img${counter}.${ext}`;
-    const filepath = path.join(uploadDir, filename);
-
-    // Compress and resize using sharp
-    await sharp(file.buffer)
-      .resize({ width: 400, withoutEnlargement: true })
-      .jpeg({ quality: 70 }) // compression quality
-      .toFile(filepath);
-    imageLinks.push(`/uploads/${filename}`);
-    counter++;
-  }
-  try{
+app.post("/uploadPost", upload.array("images", 4), async (req, res) => {
+  const { userName, userId, userImage, description } = req.body;
+  try {
+    const imageLinks = await Promise.all(
+      req.files.map((file) => uploadToCloudinary(file))
+    );
     const newPost = new Post({
       userId,
       userName,
       userImage,
       description,
-      images:imageLinks,
-      likes : 0,
-      likedBy : [],
-      comments: []
+      images: imageLinks,
+      likes: 0,
+      likedBy: [],
+      comments: [],
     });
-    const post = await newPost.save();
+
+    await newPost.save();
     const allPosts = await Post.find().sort({ timeStamp: -1 }).limit(10).lean();
-    res.send({status:200,message:'seccessfully uploaded', data:allPosts})
-  }catch(err){
-    console.log(err);
-  }
-})
+
+    res.send({
+      status: 200,message: "Successfully uploaded",data: allPosts});
+    } catch (err) {
+      console.error("Upload error:", err);
+      res.status(500).json({ status: 500, message: "Upload failed" });
+    }
+});
+
 app.get('/getPosts',async(req,res)=>{
   try{
     const allPosts = await Post.find().sort({ timeStamp: -1 }).limit(10).lean();
@@ -337,6 +342,20 @@ app.post('/likePost', async(req,res)=>{
     res.json({status:500, message:'server error'})
   }
 })
+app.post('/chatImage', upload.single('image'), (req, res) => {
+  if (!req.file) return res.status(400).send("No file uploaded");
+  
+  const stream = cloudinary.uploader.upload_stream(
+    { folder: "chat_images" },
+    (error, result) => {
+      if (error) return res.status(500).send(error);  // <-- could send raw error object
+      res.json({ imageUrl: result.secure_url });
+    }
+  );
+
+  streamifier.createReadStream(req.file.buffer).pipe(stream);
+});
+
 
 const port = process.env.PORT;
 server.listen(port, ()=>{

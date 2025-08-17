@@ -65,7 +65,6 @@ const Homepage = () => {
   };
 
   const handleLike = async(_id:string, username:string, isLike:boolean)=>{
-    
     try{
       const res = await axios.post('http://localhost:8080/likePost',{
       id:_id,
@@ -79,101 +78,101 @@ const Homepage = () => {
   }
 
   return (
-    
-    <section className='main_section'>
-      <div className={isPost?'hide':'show'}>
-        <h2>Let's create a post</h2>
-        <button onClick={()=>{setIsPost(true)}}>Post Now</button>
-      </div>
-
-      <div className={isPost?'section_control':'hide'}>
-        <h2>Let's create a post</h2>
-
-        <textarea
-          className='post_textarea'
-          placeholder="Enter description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          rows={5}
-          style={{ width: '100%', marginBottom: '1rem' }}
-        />
-
-        <input
-          type="file"
-          multiple
-          accept="image/*"
-          onChange={handleImageChange}
-          style={{ marginBottom: '1rem' }}
-        />
-
-        <div className='uploadImage_show'>
-          {images.map((image, index) => (
-            <img
-              key={index}
-              src={URL.createObjectURL(image)}
-              alt={`Preview ${index}`}
-              className='uploadImage_img'
-            />
-          ))}
+    (me)?
+      <section className='main_section'>
+        <div className={isPost?'hide':'show'}>
+          <h2>Let's create a post</h2>
+          <button onClick={()=>{setIsPost(true)}}>Post Now</button>
         </div>
 
-        <button onClick={handleUpload}>Post</button>
-      </div>
-          
-      {
-        (posts.length === 0) ? <Spinner /> : 
-        <div className='post_main'>
-          {posts.map((elem)=>{
-            return(
-              <div key={elem?._id as React.Key} className='post_div'>
-                  <div className='post_header'>
-                    {elem?.userImage && (
-                      <img 
-                        src={elem.userImage} 
-                        className="users_img" 
-                        referrerPolicy="no-referrer" 
-                        alt={`${elem.userName} image`}
-                      />
-                    )}
-                    <p className='user_name'>{elem.userName}</p>
-                  </div>
-                  <p className='post_description'>{elem?.description}</p>
-                  <div className='postImages_main'>
-                  {
-                    elem?.images?.map((ele)=>{
-                      return(
-                          <img 
-                            src={`http://localhost:8080${ele}`} 
-                            className="post_images" 
-                            referrerPolicy="no-referrer"
-                            alt='post images'/>
-                      )
-                    })
-                  }
-                  </div>
-                  <div className='bottom_contents'>
-                    <div>
-                      <img className={me?.username && elem.likedBy.includes(me?.username)?'fill':''} 
-                         src='love.png' onClick={()=>{
-                          if(!me?.username) return;
-                          const alreadyLiked = elem.likedBy.includes(me?.username);
-                          handleLike(elem._id, me?.username, alreadyLiked)}}/>
-                      <p>{elem.likes}</p>
-                    </div>
-                    <div>
-                      <img src='comment.png'/>
-                    </div>
-                    <div>
-                      <img src='share.png'/>
-                    </div>
-                  </div>
-              </div>
-            )
-          })}
-      </div>
-      }
+        <div className={isPost?'section_control':'hide'}>
+          <h2>Let's create a post</h2>
 
-    </section>
+          <textarea
+            className='post_textarea'
+            placeholder="Enter description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={5}
+            style={{ width: '100%', marginBottom: '1rem' }}
+          />
+
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={handleImageChange}
+            style={{ marginBottom: '1rem' }}
+          />
+
+          <div className='uploadImage_show'>
+            {images.map((image, index) => (
+              <img
+                key={index}
+                src={URL.createObjectURL(image)}
+                alt={`Preview ${index}`}
+                className='uploadImage_img'
+              />
+            ))}
+          </div>
+          <button onClick={handleUpload}>Post</button>
+        </div>
+            
+        {
+          (posts.length === 0) ? <Spinner /> : 
+          <div className='post_main'>
+            {posts.map((elem)=>{
+              return(
+                <div key={elem?._id as React.Key} className='post_div'>
+                    <div className='post_header'>
+                      {elem?.userImage && (
+                        <img
+                          src={elem.userImage} 
+                          className="users_img" 
+                          referrerPolicy="no-referrer" 
+                          alt={`${elem.userName} image`}
+                        />
+                      )}
+                      <p className='user_name'>{elem.userName}</p>
+                    </div>
+                    <p className='post_description'>{elem?.description}</p>
+                    <div className='postImages_main'>
+                    {
+                      elem?.images?.map((ele)=>{
+                        return(
+                            <img 
+                              src={ele} 
+                              className="post_images" 
+                              referrerPolicy="no-referrer"
+                              alt='post images'/>
+                        )
+                      })
+                    }
+                    </div>
+                    <div className='bottom_contents'>
+                      <div>
+                        <img className={me?.username && elem.likedBy.includes(me?.username)?'fill':''} 
+                          src='love.png' onClick={()=>{
+                            if(!me?.username) return;
+                            const alreadyLiked = elem.likedBy.includes(me?.username);
+                            handleLike(elem._id, me?.username, alreadyLiked)}}/>
+                        <p>{elem.likes}</p>
+                      </div>
+                      <div>
+                        <img src='comment.png'/>
+                      </div>
+                      <div>
+                        <img src='share.png'/>
+                      </div>
+                    </div>
+                </div>
+              )
+            })}
+        </div>
+        }
+      </section>
+
+    : ''
   );
 };
 

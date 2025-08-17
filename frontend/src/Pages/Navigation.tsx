@@ -15,7 +15,7 @@ const Navigation = () => {
   const data = useSelector((state:RootState)=>state.user.user);
 
   useEffect(() => {
-    setLoading(false)
+    setLoading(false);
   }, [loading]);
 
   const handleGoogleLogin = () => {
@@ -53,7 +53,8 @@ const Navigation = () => {
             referrerPolicy="no-referrer"
             alt="image"
             className='profile_image'
-            onClick={()=>{setExpandProf(!expandProf)}}
+            onClick={
+              ()=>{setExpandProf(!expandProf)}}
             />
             )}
             <div className={expandProf?'profile_expand':'profile_hide'}>
@@ -66,7 +67,7 @@ const Navigation = () => {
           </div>
         ) : (
           <div className='profile_container'>
-            <img className='profile_image' src="google.png" onClick={handleGoogleLogin}/>
+            <img className='profile_image loginImg' src="google.png" onClick={handleGoogleLogin}/>
           </div>
         )}
         <br/><br/>
