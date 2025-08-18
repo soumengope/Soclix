@@ -4,7 +4,6 @@ import { io } from 'socket.io-client';
 import { useSelector } from "react-redux";
 import type { RootState } from "../features/store";
 import FriendLists from './FriendLists';
-import axios from 'axios';
 import "./chatroom.css"
 
 const socket = io('http://localhost:8080');
@@ -55,40 +54,32 @@ function Chatroom() {
     };
   }, [roomId]);
 
+  function fileToBase64(file:File):Promise<string>  {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file); // reads file as base64
+        reader.onload = () => resolve(reader.result as string); // result is base64 string
+        reader.onerror = (error) => reject(error);
+      });
+  }
+
   const sendMessage = async() => {
     if ((message.trim() === ''  &&  !image) || !roomId) return;
-    let fileUrl = null;
+    let fileUrl = "";
 
     if (image) {
-  const formData = new FormData();
-  formData.append("image", image);
-
-  try {
-    const res = await axios.post("http://localhost:8080/chatImage", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-
-    console.log("Uploaded image URL:", res.data.imageUrl);
-
-    fileUrl = res.data.imageUrl; // ✅ use imageUrl, not fileUrl
-  } catch (error) {
-    console.error("File upload failed:", error);
-    return;
-  }
-}
-
+      fileUrl = await fileToBase64(image);
+    }
 
     // Now send socket message with file URL (if any)
     socket.emit("send-message", {
       roomId,
       message,
-      image:fileUrl, // can be null if no file
+      image:fileUrl,
       sender: socket.id,
       senderName: me?.username,
     });
-
+    console.log(fileUrl);
     // Reset
     setMessage("");
     setImage(null);

@@ -257,10 +257,16 @@ io.on('connection', (socket) => {
     socket.emit('room-history', history.reverse());
   });
 
-  socket.on('send-message', async ({ roomId, message, image, sender , senderName}) => {
-    if(!image){image=""}
-    console.log(roomId, message,image,sender,senderName)
-    const msg = await Message.create({ roomId, message, image, sender, senderName });
+  socket.on('send-message', async ({ roomId, message, image, sender, senderName}) => {
+    console.log('roomId:',roomId, message,image,sender,senderName);
+
+    let imageLink = "";
+    if(image){
+      imageLink = await cloudinary.uploader.upload(image, {
+      folder: "chat_images"
+      }).then(res => res.secure_url);
+    }
+    const msg = await Message.create({ roomId, message, image:imageLink, sender, senderName });
 
     // Emit to all in the room (including sender)
     io.to(roomId).emit('receive-message', msg);
@@ -342,20 +348,6 @@ app.post('/likePost', async(req,res)=>{
     res.json({status:500, message:'server error'})
   }
 })
-app.post('/chatImage', upload.single('image'), (req, res) => {
-  if (!req.file) return res.status(400).send("No file uploaded");
-  
-  const stream = cloudinary.uploader.upload_stream(
-    { folder: "chat_images" },
-    (error, result) => {
-      if (error) return res.status(500).send(error);  // <-- could send raw error object
-      res.json({ imageUrl: result.secure_url });
-    }
-  );
-
-  streamifier.createReadStream(req.file.buffer).pipe(stream);
-});
-
 
 const port = process.env.PORT;
 server.listen(port, ()=>{
