@@ -1,5 +1,6 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Home from './Pages/Homepage';
+import Dashboard from './Pages/Dashboard'
 import Errorpage from './Pages/Errorpage';
 import SentRequest from "./Pages/SentRequest";
 import AcceptRequest from './Pages/AcceptRequest';
@@ -18,7 +19,7 @@ import { setFriendReq } from "./features/friendReqSlice";
 import { setPosts } from "./features/postsSlice";
 
 function App() {
-
+  const location = useLocation();
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(()=>{
@@ -69,10 +70,10 @@ function App() {
 
   return (
     <>
-      <Navigation />
-      
+      {location.pathname !== '/' && <Navigation />}
       <Routes>
         <Route path='/' element={<Home/>} />
+        <Route path='/dashboard' element={<Dashboard/>} />
         <Route path='/sentReq' element={<SentRequest/>} />
         <Route path='/acceptReq' element={<AcceptRequest/>} />
         <Route path='/friends' element={<FriendLists/>} />

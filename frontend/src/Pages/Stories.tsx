@@ -2,8 +2,8 @@
 
 function Stories() {
     return (
-        <div>
-            <h1>Stories here</h1>
+        <div style={{padding:'2rem'}}>
+            <h1>Stories not yet created</h1>
         </div>
     );
 }

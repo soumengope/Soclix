@@ -18,17 +18,13 @@ const Navigation = () => {
     setLoading(false);
   }, [loading]);
 
-  const handleGoogleLogin = () => {
-    window.open('http://localhost:8080/auth/google', '_self');
-  };
-
   if (loading) return <p className='loading'>Checking login status...</p>;
 
   return (
     <section className='navbar_main'>
       <div className='navbar_left'>
         <nav className={data ? 'show_navbar' : 'blur_navbar'}>
-          <div className={`hpnav_lists ${location.pathname === '/'?'active':''}`} onClick={()=>{navigate('/')} }>
+          <div className={`hpnav_lists ${location.pathname === '/dashboard'?'active':''}`} onClick={()=>{navigate('/dashboard')} }>
             <img src="home.png"/>
           </div>
           <div className={`hpnav_lists ${location.pathname === '/sentReq'?'active':''}`} onClick={()=>{navigate('/sentReq')}}>
@@ -66,9 +62,7 @@ const Navigation = () => {
             </div>
           </div>
         ) : (
-          <div className='profile_container'>
-            <img className='profile_image loginImg' src="google.png" onClick={handleGoogleLogin}/>
-          </div>
+          <></>
         )}
         <br/><br/>
       </div>

@@ -1,5 +1,4 @@
 /* color :  bg-color:#FEFBF6, button-color:#3D3C42, nav:#A6D1E6 other:#daa4de*/
-
 *,
 *::after,
 *::before{
@@ -132,6 +131,19 @@ button:hover{
 }
 .bottom_contents p{
   padding-top:0.5rem;
+}
+.custom_file{
+  margin: 0 auto;
+}
+.custom_file input[type="file"] {
+  display: none;
+}
+.custom_file label {
+  cursor: pointer;
+}
+.custom_file img{
+  width: 40px;
+  height: 40px;
 }
 @media (max-width:700px){
   .show{
