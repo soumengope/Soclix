@@ -83,13 +83,13 @@ passport.use(
   new googleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: 'http://localhost:8080/auth/callback',
+    callbackURL: 'https://soclix-backend.onrender.com/auth/callback',
   }, async (accessToken, refreshToken, profile, done) => {
     try {
       const existingUser = await User.findOne({ googleId: profile.id });
 
       if (existingUser) {
-        return done(null, existingUser); // User already exists
+        return done(null, existingUser);
         console.log('user exited');
         
       }
@@ -116,7 +116,7 @@ passport.serializeUser((user, done) => {
   done(null, user._id); // only store _id in session
 });
 passport.deserializeUser(async (id, done) => {
-  //console.log('Deserialize ID:', id); // 👈 Check if it's a valid ObjectId string
+  //console.log('Deserialize ID:', id); 
   try {
     const user = await User.findById(id);
     done(null, user);
@@ -161,7 +161,7 @@ app.get('/logout', (req, res, next) => {
         path: '/', // important!
         httpOnly: true,
         sameSite: 'lax', // match your session setup
-        secure: false // set true in production with HTTPS
+        secure: true // set true in production with HTTPS
       });
 
       res.redirect('http://localhost:5173'); // or send a JSON response
