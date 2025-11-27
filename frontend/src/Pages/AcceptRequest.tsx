@@ -18,14 +18,14 @@ function AcceptRequest() {
     const sendAcceptReq = async(sender:FriendReq)=>{
         if(!me || !sender) return ;
         try{
-            const res = await axios.post('https://soclix.onrender.com//acceptRequest',{
+            const res = await axios.post('https://soclix.onrender.com/acceptRequest',{
                 myId : me._id,
                 myName : me.username,
                 myImage : me.image,
                 senderId : sender.senderId,
                 senderName : sender.senderName,
                 senderImage : sender.senderImage
-            })
+            }, { withCredentials: true })
 
             if (res.status === 200){
                 console.log('friend list added successfully');
