@@ -6,7 +6,7 @@ import type { RootState } from "../features/store";
 import FriendLists from './FriendLists';
 import "./chatroom.css"
 
-const socket = io('http://localhost:8080');
+const socket = io('https://soclix.onrender.com');
 
 type Message = {
   sender: string,

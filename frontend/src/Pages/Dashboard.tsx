@@ -21,7 +21,6 @@ const Homepage = () => {
   const [description, setDescription] = useState('');
   const [isPost, setIsPost] = useState<boolean>(false);
 
-  // Handles new image(s) selection
   const handleImageChange = (e:ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
 
@@ -50,7 +49,7 @@ const Homepage = () => {
     });
 
     try{
-      const res = await axios.post('http://localhost:8080/uploadPost',formData,{
+      const res = await axios.post('https://soclix.onrender.com/uploadPost',formData,{
         headers: { 'Content-Type': 'multipart/form-data' }
       })
       console.log(res.data)
@@ -66,7 +65,7 @@ const Homepage = () => {
 
   const handleLike = async(_id:string, username:string, isLike:boolean)=>{
     try{
-      const res = await axios.post('http://localhost:8080/likePost',{
+      const res = await axios.post('https://soclix.onrender.com/likePost',{
       id:_id,
       username,
       isLike

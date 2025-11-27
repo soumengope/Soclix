@@ -39,13 +39,13 @@ const {Server} = require('socket.io');
 const server = http.createServer(app);
 const io = new Server(server,{
   cors:{
-    origin : "http://localhost:5173",
+    origin : "https://soclix.vercel.app/",
     methods : ["GET","POST"],
   },
 });
 
 app.use(cors({
-    origin:("http://localhost:5173"),
+    origin:("https://soclix.vercel.app/"),
     credentials:true
 }))
 app.use(cookieParser())
@@ -83,7 +83,11 @@ passport.use(
   new googleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+<<<<<<< HEAD
     callbackURL: 'https://soclix-backend.onrender.com/auth/callback',
+=======
+    callbackURL: 'https://soclix.onrender.com/auth/callback',
+>>>>>>> f85ae65 (updated frontend link)
   }, async (accessToken, refreshToken, profile, done) => {
     try {
       const existingUser = await User.findOne({ googleId: profile.id });
@@ -134,9 +138,9 @@ app.get('/auth/google',passport.authenticate('google', {scope:['profile', 'email
 
 app.get('/auth/callback',passport.authenticate('google', {failureRedirect:'/'}), (req,res)=>{
     if(req.user){
-        res.redirect('http://localhost:5173') // add another page in production
+        res.redirect('https://soclix.vercel.app/dashboard') // add another page in production
     }else{
-        res.redirect('http://localhost:5173');
+        res.redirect('https://soclix.vercel.app/');
     }
 })
 app.get('/me',(req,res)=>{
@@ -164,7 +168,7 @@ app.get('/logout', (req, res, next) => {
         secure: true // set true in production with HTTPS
       });
 
-      res.redirect('http://localhost:5173'); // or send a JSON response
+      res.redirect('https://soclix.vercel.app/'); // or send a JSON response
     });
   });
 });

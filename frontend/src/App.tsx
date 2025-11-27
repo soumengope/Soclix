@@ -26,7 +26,7 @@ function App() {
     const fetchUser = async()=>{
       try{
         axios.defaults.withCredentials = true; 
-        const res = await axios.get('http://localhost:8080/me');
+        const res = await axios.get('https://soclix.onrender.com/me');
         if(res.data){
           dispatch(addUser(res.data));
         } 
@@ -41,7 +41,7 @@ function App() {
     const fetchFriendReq = async()=>{
       try{
         axios.defaults.withCredentials = true; 
-        const res = await axios.get('http://localhost:8080/allFriendReq');
+        const res = await axios.get('https://soclix.onrender.com/allFriendReq');
         if(res.data){
           dispatch(setFriendReq(res.data))
         } 
@@ -56,7 +56,7 @@ function App() {
     const fetchPosts = async()=>{
       try{
         axios.defaults.withCredentials = true; 
-        const res = await axios.get('http://localhost:8080/getPosts');
+        const res = await axios.get('https://soclix.onrender.com/getPosts');
         if(res.data){
           dispatch(setPosts(res.data))
           console.log(res.data);
