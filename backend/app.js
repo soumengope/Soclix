@@ -83,7 +83,6 @@ passport.use(
   new googleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: 'https://soclix-backend.onrender.com/auth/callback',
     callbackURL: 'https://soclix.onrender.com/auth/callback',
   }, async (accessToken, refreshToken, profile, done) => {
     try {
@@ -161,7 +160,7 @@ app.get('/logout', (req, res, next) => {
       res.clearCookie('connect.sid', {
         path: '/', // important!
         httpOnly: true,
-        sameSite: 'lax', // match your session setup
+        sameSite: 'none', // match your session setup
         secure: true // set true in production with HTTPS
       });
 
