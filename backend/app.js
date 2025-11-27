@@ -40,7 +40,7 @@ const {Server} = require('socket.io');
 const server = http.createServer(app);
 const io = new Server(server,{
   cors:{
-    origin : "https://soclix.vercel.app/",
+    origin : "https://soclix.vercel.app",
     methods : ["GET","POST"],
   },
 });
