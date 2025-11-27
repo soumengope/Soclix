@@ -32,6 +32,7 @@ cloudinary.config({
 conn.set();
 
 const app = express();
+app.set("trust proxy", 1);
 
 //socket.io setup
 const http = require('http');
@@ -45,7 +46,7 @@ const io = new Server(server,{
 });
 
 app.use(cors({
-    origin:("https://soclix.vercel.app/"),
+    origin:("https://soclix.vercel.app"),
     credentials:true
 }))
 app.use(cookieParser())
