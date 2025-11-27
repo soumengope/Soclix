@@ -6,7 +6,7 @@ A full-stack social chat application where users can sign in using Google, send 
 
 ## 🚀 Live Demo
 
-🌐 [View Live App](#) *(not deployed yet)*
+🌐 [View Live App](#https://soclix.vercel.app/)
 
 ---
 
