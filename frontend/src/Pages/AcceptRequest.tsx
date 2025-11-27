@@ -2,7 +2,6 @@ import { useSelector } from "react-redux";
 import type { RootState } from "../features/store";
 import type { FriendReq } from "../features/friendReqSlice";
 import axios from "axios";
-import './sentrequest.css';
 
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../features/store";
