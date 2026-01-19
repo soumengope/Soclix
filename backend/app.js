@@ -136,7 +136,7 @@ app.get('/auth/google',passport.authenticate('google', {scope:['profile', 'email
 
 app.get('/auth/callback',passport.authenticate('google', {failureRedirect:'/'}), (req,res)=>{
     if(req.user){
-        res.redirect('https://soclix.vercel.app/dashboard') // add another page in production
+        res.redirect('https://soclix.vercel.app')
     }else{
         res.redirect('https://soclix.vercel.app');
     }
