@@ -7,9 +7,9 @@ import type { RootState } from "../features/store";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../features/store";
 import { addFriendReq } from "../features/friendReqSlice";
-import './sentrequest.css';
 import Spinner from "../components/Spinner";
 import AcceptRequest from "./AcceptRequest";
+import './sentrequest.css';
 
 function SentRequest() {
     const me = useSelector((state:RootState)=>state.user.user);
@@ -28,7 +28,7 @@ function SentRequest() {
         if (!me) return;
         const apiCall = async()=>{
             try{
-                const response = await axios.get<User[]>('https://soclix.onrender.com/allUsers');
+                const response = await axios.get<User[]>('http://localhost:8080/allUsers');
                 if(response.data){
                     const newUsers = response.data?.filter(elem=> elem.googleId !== me?.googleId);
                     const nextUsers = newUsers?.filter(elem=> !allFriendReq.some(req=> 
@@ -51,7 +51,7 @@ function SentRequest() {
     const sendtoBackend = async(user:User)=>{
         if(!me) return;
         try{
-            const res = await axios.post('https://soclix.onrender.com/addFriend',
+            const res = await axios.post('http://localhost:8080/addFriend',
                 {   senderId:me?._id,
                     senderName:me?.username,
                     senderImage:me?.image,

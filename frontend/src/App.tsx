@@ -17,16 +17,32 @@ import axios from "axios";
 
 import { setFriendReq } from "./features/friendReqSlice";
 import { setPosts } from "./features/postsSlice";
+import { addFriendReq } from "./features/friendReqSlice";
+import { io } from 'socket.io-client';
+import { setPostsLoading } from "./features/postsSlice";
 
 function App() {
   const location = useLocation();
   const dispatch = useDispatch<AppDispatch>();
 
+  // socket for real-time updates (friend requests, etc.)
+  useEffect(() => {
+    const socket = io('http://localhost:8080');
+    socket.on('friend-request', (req) => {
+      // dispatch to store so UIs update immediately
+      dispatch(addFriendReq(req));
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [dispatch]);
+
   useEffect(()=>{
     const fetchUser = async()=>{
       try{
         axios.defaults.withCredentials = true; 
-        const res = await axios.get('https://soclix.onrender.com/me');
+        const res = await axios.get('http://localhost:8080/me');
         if(res.data){
           dispatch(addUser(res.data));
         } 
@@ -41,7 +57,7 @@ function App() {
     const fetchFriendReq = async()=>{
       try{
         axios.defaults.withCredentials = true; 
-        const res = await axios.get('https://soclix.onrender.com/allFriendReq');
+        const res = await axios.get('http://localhost:8080/allFriendReq');
         if(res.data){
           dispatch(setFriendReq(res.data))
         } 
@@ -56,11 +72,13 @@ function App() {
     const fetchPosts = async()=>{
       try{
         axios.defaults.withCredentials = true; 
-        const res = await axios.get('https://soclix.onrender.com/getPosts');
+        dispatch(setPostsLoading(true));
+        const res = await axios.get('http://localhost:8080/getPosts');
         if(res.data){
           dispatch(setPosts(res.data))
           console.log(res.data);
-        } 
+        }
+        dispatch(setPostsLoading(false));
       }catch(err){
         console.log(err)
       }

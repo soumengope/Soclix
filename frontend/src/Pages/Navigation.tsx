@@ -56,7 +56,7 @@ const Navigation = () => {
             <div className={expandProf?'profile_expand':'profile_hide'}>
               <p>{data.username}</p>
               <button 
-              onClick={() => window.location.href = 'https://soclix.onrender.com/logout'}
+              onClick={() => window.location.href = 'http://localhost:8080/logout'}
               className = 'logout_btn'
               >Logout</button>
             </div>

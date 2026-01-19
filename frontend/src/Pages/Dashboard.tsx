@@ -1,4 +1,4 @@
-import {useState, type ChangeEvent} from 'react';
+import {useState, type ChangeEvent, useEffect} from 'react';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../features/store';
@@ -16,10 +16,15 @@ const Homepage = () => {
   console.log(me);
   
   const posts = useSelector((state:RootState)=> state.posts.posts);
+  const postsLoading = useSelector((state:RootState)=> (state.posts as any).loading);
 
   const [images, setImages] = useState<File[]>([]);
   const [description, setDescription] = useState('');
   const [isPost, setIsPost] = useState<boolean>(false);
+  
+  useEffect(() => {
+    // No-op: keep hook order predictable; postsLoading comes from store.
+  }, [postsLoading]);
 
   const handleImageChange = (e:ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -49,7 +54,7 @@ const Homepage = () => {
     });
 
     try{
-      const res = await axios.post('https://soclix.onrender.com/uploadPost',formData,{
+      const res = await axios.post('http://localhost:8080/uploadPost',formData,{
         headers: { 'Content-Type': 'multipart/form-data' }
       })
       console.log(res.data)
@@ -65,7 +70,7 @@ const Homepage = () => {
 
   const handleLike = async(_id:string, username:string, isLike:boolean)=>{
     try{
-      const res = await axios.post('https://soclix.onrender.com/likePost',{
+      const res = await axios.post('http://localhost:8080/likePost',{
       id:_id,
       username,
       isLike
@@ -75,6 +80,62 @@ const Homepage = () => {
       console.log(err);
     }
   }
+  // Prepare posts rendering to avoid large inline JSX ternary
+  const postsSection = postsLoading ? (
+    <Spinner />
+  ) : posts.length === 0 ? (
+    <div style={{ padding: '1rem', color: '#666', paddingTop:'5rem' }}>No posts available</div>
+  ) : (
+    <div className='post_main'>
+      {posts.map((elem)=>{
+        return(
+          <div key={elem?._id} className='post_div'>
+              <div className='post_header'>
+                {elem?.userImage && (
+                  <img
+                    src={elem.userImage} 
+                    className="users_img" 
+                    referrerPolicy="no-referrer" 
+                    alt={`${elem.userName} image`}
+                  />
+                )}
+                <p className='user_name'>{elem.userName}</p>
+              </div>
+              <p className='post_description'>{elem?.description}</p>
+              <div className='postImages_main'>
+              {
+                elem?.images?.map((ele)=>{
+                  return(
+                      <img 
+                        src={ele} 
+                        className="post_images" 
+                        referrerPolicy="no-referrer"
+                        alt='post images'/>
+                  )
+                })
+              }
+              </div>
+              <div className='bottom_contents'>
+                <div>
+                  <img className={me?.username && elem.likedBy.includes(me?.username)?'fill':''} 
+                    src='love.png' onClick={()=>{
+                      if(!me?.username) return;
+                      const alreadyLiked = elem.likedBy.includes(me?.username);
+                      handleLike(elem._id, me?.username, alreadyLiked)}}/>
+                  <p>{elem.likes}</p>
+                </div>
+                <div>
+                  <img src='comment.png'/>
+                </div>
+                <div>
+                  <img src='share.png'/>
+                </div>
+              </div>
+          </div>
+        )
+      })}
+    </div>
+  );
 
   return (
     (me)?
@@ -125,58 +186,7 @@ const Homepage = () => {
           <button onClick={handleUpload}>Post</button>
         </div>
             
-        {
-          (posts.length === 0) ? <Spinner /> : 
-          <div className='post_main'>
-            {posts.map((elem)=>{
-              return(
-                <div key={elem?._id as React.Key} className='post_div'>
-                    <div className='post_header'>
-                      {elem?.userImage && (
-                        <img
-                          src={elem.userImage} 
-                          className="users_img" 
-                          referrerPolicy="no-referrer" 
-                          alt={`${elem.userName} image`}
-                        />
-                      )}
-                      <p className='user_name'>{elem.userName}</p>
-                    </div>
-                    <p className='post_description'>{elem?.description}</p>
-                    <div className='postImages_main'>
-                    {
-                      elem?.images?.map((ele)=>{
-                        return(
-                            <img 
-                              src={ele} 
-                              className="post_images" 
-                              referrerPolicy="no-referrer"
-                              alt='post images'/>
-                        )
-                      })
-                    }
-                    </div>
-                    <div className='bottom_contents'>
-                      <div>
-                        <img className={me?.username && elem.likedBy.includes(me?.username)?'fill':''} 
-                          src='love.png' onClick={()=>{
-                            if(!me?.username) return;
-                            const alreadyLiked = elem.likedBy.includes(me?.username);
-                            handleLike(elem._id, me?.username, alreadyLiked)}}/>
-                        <p>{elem.likes}</p>
-                      </div>
-                      <div>
-                        <img src='comment.png'/>
-                      </div>
-                      <div>
-                        <img src='share.png'/>
-                      </div>
-                    </div>
-                </div>
-              )
-            })}
-        </div>
-        }
+  {postsSection}
       </section>
 
     : ''

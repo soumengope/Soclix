@@ -31,7 +31,7 @@
 }
 .show_navbar{
     display:flex;
-    pointer-events:fill;
+    pointer-events:auto;
     justify-content:space-around;
     align-items: center;
 }
@@ -60,6 +60,7 @@
     position: fixed;
     inset:57px 0 55% 72%;
     padding-top:1rem;
+    z-index: 9999; /* ensure dropdown sits above other content */
 }
 .profile_expand p{
     padding:0.2rem;

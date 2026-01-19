@@ -6,7 +6,7 @@ import type { RootState } from "../features/store";
 import FriendLists from './FriendLists';
 import "./chatroom.css"
 
-const socket = io('https://soclix.onrender.com');
+const socket = io('http://localhost:8080');
 
 type Message = {
   sender: string,
@@ -26,6 +26,8 @@ function Chatroom() {
   const chatBottomRef = useRef<HTMLDivElement>(null);
   const [image, setImage]= useState<File | null>(null);
 
+  const friends = me?.friends ?? [];
+
   useEffect(() => {
     if (!roomId) return;
 
@@ -42,17 +44,33 @@ function Chatroom() {
       }
     });
 
-    // Receive new messages
-    socket.on('receive-message', (msg: Message) => {
-      setMessages((prev) => [...prev, msg]);
-    });
-
     // Cleanup on unmount
     return () => {
       socket.off('room-history');
-      socket.off('receive-message');
     };
   }, [roomId]);
+
+  // If user data is available (or when roomId changes) derive friend name from the friend list
+  useEffect(() => {
+    if (!roomId || !me) return;
+    const friend = me.friends.find((f) => f.roomId === roomId);
+    if (friend) setFriendName(friend.friendName);
+  }, [roomId, me]);
+
+  // Update receive-message handler to set friend name if it's not known yet
+  useEffect(() => {
+    const handler = (msg: Message) => {
+      setMessages((prev) => [...prev, msg]);
+      if (!friendName && msg.senderName !== me?.username) {
+        setFriendName(msg.senderName);
+      }
+    };
+
+    socket.on('receive-message', handler);
+    return () => {
+      socket.off('receive-message', handler);
+    };
+  }, [friendName, me]);
 
   function fileToBase64(file:File):Promise<string>  {
     return new Promise((resolve, reject) => {
@@ -103,6 +121,18 @@ const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     }
     e.target.value = "";
 };
+
+  // If user has no friends, show message and hide chatroom
+  if (friends.length === 0) {
+    return (
+      <section className='noFriend_section'>
+        <div style={{ padding: '2rem', textAlign: 'center' }}>
+          <h2>You don't have any friends yet</h2>
+          <p>Add some friends to start chatting.</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className='chatroom_mainSection'>

@@ -24,7 +24,7 @@
 }
 .chat_container {
   width: 80%;
-  max-height:64dvh;
+  min-height:64dvh;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;

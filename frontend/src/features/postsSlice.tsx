@@ -11,7 +11,7 @@ export interface Posts{
     likedBy : string[],
     comments : string[],
   }
-const initialState:{posts:Posts[]} = {posts:[]};
+const initialState:{posts:Posts[], loading:boolean} = {posts:[], loading:true};
 
 const postsSlice = createSlice({
     name:'posts',
@@ -19,11 +19,15 @@ const postsSlice = createSlice({
     reducers:{
         setPosts:(state, action:PayloadAction<Posts[]>)=>{
             state.posts = action.payload;
+            state.loading = false;
+        },
+        setPostsLoading:(state, action:PayloadAction<boolean>)=>{
+            state.loading = action.payload;
         },
         addPosts:(state, action:PayloadAction<Posts>)=>{
             state.posts.push(action.payload);
         }
     }
 })
-export const {setPosts, addPosts} = postsSlice.actions;
+export const {setPosts, addPosts, setPostsLoading} = postsSlice.actions;
 export default postsSlice.reducer;

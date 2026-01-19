@@ -14,7 +14,6 @@ const friendReqSchema = require('./dbControl/friendReqSchema.js');
 const Message = require('./dbControl/chatsSchema.js');
 const { v4: uuidv4 } = require('uuid');
 const multer = require('multer');
-const sharp = require('sharp');
 const fs = require('fs');
 const path = require('path');
 const Post = require('./dbControl/postSchema.js');
@@ -39,13 +38,13 @@ const {Server} = require('socket.io');
 const server = http.createServer(app);
 const io = new Server(server,{
   cors:{
-    origin : "https://soclix.vercel.app/",
+    origin : "http://localhost:5173",
     methods : ["GET","POST"],
   },
 });
 
 app.use(cors({
-    origin:("https://soclix.vercel.app/"),
+    origin:("http://localhost:5173"),
     credentials:true
 }))
 app.use(cookieParser())
@@ -53,19 +52,22 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.json());
 app.use(bodyParser.json());
 
+// create a persistent store instance so we can explicitly destroy sessions later
+const sessionStore = MongoStore.create({
+  mongoUrl: process.env.MONGO_URI,
+  collectionName: 'mysessions',
+  ttl: 60 * 60 * 24 * 7 // 7 days
+});
+
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URI,
-    collectionName: 'mysessions',
-    ttl: 60 * 60 * 24 * 7 // 7 days
-  }),
+  store: sessionStore,
   cookie: {
     httpOnly: true,
-    secure: true,
-    sameSite: 'none',
+    secure: false, // set to true if using HTTPS in production
+    sameSite: 'lax',
     maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
   }
 }));
@@ -83,17 +85,13 @@ passport.use(
   new googleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-<<<<<<< HEAD
-    callbackURL: 'https://soclix-backend.onrender.com/auth/callback',
-=======
-    callbackURL: 'https://soclix.onrender.com/auth/callback',
->>>>>>> f85ae65 (updated frontend link)
+    callbackURL: 'http://localhost:8080/auth/callback',
   }, async (accessToken, refreshToken, profile, done) => {
     try {
       const existingUser = await User.findOne({ googleId: profile.id });
 
       if (existingUser) {
-        return done(null, existingUser);
+        return done(null, existingUser); // User already exists
         console.log('user exited');
         
       }
@@ -120,7 +118,7 @@ passport.serializeUser((user, done) => {
   done(null, user._id); // only store _id in session
 });
 passport.deserializeUser(async (id, done) => {
-  //console.log('Deserialize ID:', id); 
+  //console.log('Deserialize ID:', id); // Check if it's a valid ObjectId string
   try {
     const user = await User.findById(id);
     done(null, user);
@@ -138,9 +136,9 @@ app.get('/auth/google',passport.authenticate('google', {scope:['profile', 'email
 
 app.get('/auth/callback',passport.authenticate('google', {failureRedirect:'/'}), (req,res)=>{
     if(req.user){
-        res.redirect('https://soclix.vercel.app/dashboard') // add another page in production
+        res.redirect('http://localhost:5173') // add another page in production
     }else{
-        res.redirect('https://soclix.vercel.app/');
+        res.redirect('http://localhost:5173');
     }
 })
 app.get('/me',(req,res)=>{
@@ -153,22 +151,38 @@ app.get('/me',(req,res)=>{
 })
 
 app.get('/logout', (req, res, next) => {
+  const sid = req.sessionID;
   req.logout(function(err) {
     if (err) return next(err);
 
-    // Destroy session from MongoDB
+    // Destroy session from express (and session store)
     req.session.destroy(function(err) {
-      if (err) return next(err);
+      if (err) {
+        console.error('Error destroying session:', err);
+        // attempt to destroy directly from the store as a fallback
+        if (sid && sessionStore && typeof sessionStore.destroy === 'function') {
+          sessionStore.destroy(sid, (storeErr) => {
+            if (storeErr) console.error('Store destroy error:', storeErr);
+          });
+        }
+      } else {
+        // ensure it's removed from the store as well
+        if (sid && sessionStore && typeof sessionStore.destroy === 'function') {
+          sessionStore.destroy(sid, (storeErr) => {
+            if (storeErr) console.error('Store destroy error:', storeErr);
+          });
+        }
+      }
 
       // Clear the cookie from the browser
       res.clearCookie('connect.sid', {
         path: '/', // important!
         httpOnly: true,
         sameSite: 'lax', // match your session setup
-        secure: true // set true in production with HTTPS
+        secure: false // set true in production with HTTPS
       });
 
-      res.redirect('https://soclix.vercel.app/'); // or send a JSON response
+      res.redirect('http://localhost:5173'); // or send a JSON response
     });
   });
 });
@@ -196,6 +210,13 @@ app.post('/addFriend',async (req,res)=>{
     })
     const savedRequest = await newRequest.save();
     console.log('friend request sent successfully');
+
+    // notify connected clients in realtime about the new friend request
+    try{
+      io.emit('friend-request', savedRequest);
+    }catch(err){
+      console.error('Error emitting friend-request:', err);
+    }
 
     //const meUpdate = await User.findById(senderId);
 

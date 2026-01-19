@@ -7,7 +7,7 @@ function Homepage() {
     const navigate = useNavigate();
     const data = useSelector((state:RootState)=>state.user.user);
     const handleGoogleLogin = () => {
-        window.open('https://soclix.onrender.com/auth/google', '_self');
+        window.open('http://localhost:8080/auth/google', '_self');
     };
     useEffect(()=>{
         if(!data) return;

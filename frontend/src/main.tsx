@@ -3,6 +3,7 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App.tsx'
 import store from './features/store.tsx';
 import { Provider } from 'react-redux';
+import './Pages/sentrequest.css';
 
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

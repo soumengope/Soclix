@@ -46,14 +46,14 @@ function AcceptRequest() {
                         <div key = {elem._id as React.Key} className="user_lists">
                             {elem?.senderImage && (
                             <img src={elem.senderImage?.toString()} 
-                                width={20} height={20} referrerPolicy="no-referrer" 
+                                 referrerPolicy="no-referrer" 
                                 alt={`${elem.senderName} image`}
                                 className="user_img"
                                 />
                             )}
                             <div className="users_request">
                                 <p>{elem.senderName}</p>
-                                <button onClick={()=>{sendAcceptReq(elem)}}>Accept</button>
+                                <button onClick={()=>{sendAcceptReq(elem)}}  className="request_btn">Accept</button>
                             </div>
                         </div>
                     )
