@@ -51,6 +51,7 @@ app.use(cookieParser())
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.json());
 app.use(bodyParser.json());
+app.set('trust proxy', 1);
 
 // create a persistent store instance so we can explicitly destroy sessions later
 const sessionStore = MongoStore.create({
@@ -66,8 +67,8 @@ app.use(session({
   store: sessionStore,
   cookie: {
     httpOnly: true,
-    secure: false, // set to true if using HTTPS in production
-    sameSite: 'lax',
+    secure: true, // set to true if using HTTPS in production
+    sameSite: 'none',
     maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
   }
 }));
