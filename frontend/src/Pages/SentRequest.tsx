@@ -28,7 +28,7 @@ function SentRequest() {
         if (!me) return;
         const apiCall = async()=>{
             try{
-                const response = await axios.get<User[]>('http://localhost:8080/allUsers');
+                const response = await axios.get<User[]>('https://soclix-production.up.railway.app/allUsers');
                 if(response.data){
                     const newUsers = response.data?.filter(elem=> elem.googleId !== me?.googleId);
                     const nextUsers = newUsers?.filter(elem=> !allFriendReq.some(req=> 
@@ -51,7 +51,7 @@ function SentRequest() {
     const sendtoBackend = async(user:User)=>{
         if(!me) return;
         try{
-            const res = await axios.post('http://localhost:8080/addFriend',
+            const res = await axios.post('https://soclix-production.up.railway.app/addFriend',
                 {   senderId:me?._id,
                     senderName:me?.username,
                     senderImage:me?.image,

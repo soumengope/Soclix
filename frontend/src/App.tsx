@@ -1,6 +1,6 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import Home from './Pages/Homepage';
-import Dashboard from './Pages/Dashboard'
+import Dashboard from './Pages/Dashboard';
 import Errorpage from './Pages/Errorpage';
 import SentRequest from "./Pages/SentRequest";
 import AcceptRequest from './Pages/AcceptRequest';
@@ -27,7 +27,7 @@ function App() {
 
   // socket for real-time updates (friend requests, etc.)
   useEffect(() => {
-    const socket = io('http://localhost:8080');
+  const socket = io('https://soclix-production.up.railway.app');
     socket.on('friend-request', (req) => {
       // dispatch to store so UIs update immediately
       dispatch(addFriendReq(req));
@@ -42,7 +42,7 @@ function App() {
     const fetchUser = async()=>{
       try{
         axios.defaults.withCredentials = true; 
-        const res = await axios.get('http://localhost:8080/me');
+  const res = await axios.get('https://soclix-production.up.railway.app/me');
         if(res.data){
           dispatch(addUser(res.data));
         } 
@@ -57,7 +57,7 @@ function App() {
     const fetchFriendReq = async()=>{
       try{
         axios.defaults.withCredentials = true; 
-        const res = await axios.get('http://localhost:8080/allFriendReq');
+  const res = await axios.get('https://soclix-production.up.railway.app/allFriendReq');
         if(res.data){
           dispatch(setFriendReq(res.data))
         } 
@@ -73,7 +73,7 @@ function App() {
       try{
         axios.defaults.withCredentials = true; 
         dispatch(setPostsLoading(true));
-        const res = await axios.get('http://localhost:8080/getPosts');
+  const res = await axios.get('https://soclix-production.up.railway.app/getPosts');
         if(res.data){
           dispatch(setPosts(res.data))
           console.log(res.data);

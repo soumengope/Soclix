@@ -18,7 +18,7 @@ function AcceptRequest() {
     const sendAcceptReq = async(sender:FriendReq)=>{
         if(!me || !sender) return ;
         try{
-            const res = await axios.post('http://localhost:8080/acceptRequest',{
+            const res = await axios.post('https://soclix-production.up.railway.app/acceptRequest',{
                 myId : me._id,
                 myName : me.username,
                 myImage : me.image,

@@ -54,7 +54,7 @@ const Homepage = () => {
     });
 
     try{
-      const res = await axios.post('http://localhost:8080/uploadPost',formData,{
+  const res = await axios.post('https://soclix-production.up.railway.app/uploadPost',formData,{
         headers: { 'Content-Type': 'multipart/form-data' }
       })
       console.log(res.data)
@@ -70,7 +70,7 @@ const Homepage = () => {
 
   const handleLike = async(_id:string, username:string, isLike:boolean)=>{
     try{
-      const res = await axios.post('http://localhost:8080/likePost',{
+  const res = await axios.post('https://soclix-production.up.railway.app/likePost',{ 
       id:_id,
       username,
       isLike
