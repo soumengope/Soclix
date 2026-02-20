@@ -27,7 +27,7 @@ function App() {
 
   // socket for real-time updates (friend requests, etc.)
   useEffect(() => {
-  const socket = io('https://soclix-production.up.railway.app');
+  const socket = io('https://soclix.onrender.com');
     socket.on('friend-request', (req) => {
       // dispatch to store so UIs update immediately
       dispatch(addFriendReq(req));
@@ -42,7 +42,7 @@ function App() {
     const fetchUser = async()=>{
       try{
         axios.defaults.withCredentials = true; 
-  const res = await axios.get('https://soclix-production.up.railway.app/me');
+  const res = await axios.get('https://soclix.onrender.com/me');
         if(res.data){
           dispatch(addUser(res.data));
         } 
@@ -57,7 +57,7 @@ function App() {
     const fetchFriendReq = async()=>{
       try{
         axios.defaults.withCredentials = true; 
-  const res = await axios.get('https://soclix-production.up.railway.app/allFriendReq');
+  const res = await axios.get('https://soclix.onrender.com/allFriendReq');
         if(res.data){
           dispatch(setFriendReq(res.data))
         } 
@@ -73,7 +73,7 @@ function App() {
       try{
         axios.defaults.withCredentials = true; 
         dispatch(setPostsLoading(true));
-  const res = await axios.get('https://soclix-production.up.railway.app/getPosts');
+  const res = await axios.get('https://soclix.onrender.com/getPosts');
         if(res.data){
           dispatch(setPosts(res.data))
           console.log(res.data);
