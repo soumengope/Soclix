@@ -86,7 +86,7 @@ passport.use(
   new googleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: 'https://soclix-production.up.railway.app/auth/callback',
+    callbackURL: 'https://soclix.onrender.com/auth/callback',
   }, async (accessToken, refreshToken, profile, done) => {
     try {
       const existingUser = await User.findOne({ googleId: profile.id });
@@ -132,6 +132,9 @@ passport.deserializeUser(async (id, done) => {
 app.get('/',(req,res)=>{
     res.send("<a href='/auth/google'>Login with google</a>")
 })
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
 
 app.get('/auth/google',passport.authenticate('google', {scope:['profile', 'email']}))
 
